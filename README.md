@@ -60,8 +60,8 @@ FLUSH PRIVILEGES;
 
 ### 5. Clonar o repositório e instalar dependências
 ```bash
-git clone https://github.com/moniquemarrafon/pentest-server.git
-cd pentest-server
+git clone https://github.com/moniquemarrafon/dvwa-command-injection-toolkit.git
+cd dvwa-command-injection-toolkit
 pip install -r requirements.txt
 ```
 
