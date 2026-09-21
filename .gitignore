@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Relatórios gerados pelo scanner
+relatorio_*.txt
+
+# Ambiente virtual
+venv/
+env/
+.env/
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ficheiros temporários
+*.tmp
+*.log
