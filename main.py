@@ -7,7 +7,7 @@ import threading
 from utils.auth import login_dvwa, set_security_level
 from modules.exploits import (
     reconhecimento, scan_rede, scan_portas,
-    ler_config, listar_servicos, ver_ligacoes
+    listar_servicos, ver_ligacoes
 )
 
 # --- PALETA DE CORES ---
@@ -39,6 +39,7 @@ class ScannerApp:
         self.root.minsize(980, 700)
         self.root.configure(bg=BG_ROOT)
         self.session = None
+        self.camuflar = True  # esconde dados reais na apresentacao
         self.botoes_opcoes = []
         self.dispositivos_encontrados = []
         self.criar_interface()
@@ -141,7 +142,6 @@ class ScannerApp:
             ("🔎", "Reconhecimento",    self.opcao_reconhecimento, ACCENT),
             ("🌐", "Scan da Rede",      self.opcao_scan_rede,      ACCENT),
             ("🔌", "Scan de Portas",    self.opcao_scan_portas,    ACCENT),
-            ("🔑", "Ler Configurações", self.opcao_ler_config,     WARNING),
             ("🖥",  "Ver Serviços",      self.opcao_listar_servicos, ACCENT),
             ("🔗", "Ver Ligações",      self.opcao_ver_ligacoes,   ACCENT),
         ]
@@ -274,7 +274,7 @@ class ScannerApp:
         self.log("─── RECONHECIMENTO ───────────────────────────\n")
         self.desactivar_botoes()
         def tarefa():
-            reconhecimento(self.session, "low", callback=self.log)
+            reconhecimento(self.session, "low", callback=self.log, camuflar=self.camuflar)
             self.log("\n✅ Concluído.")
             self.activar_botoes()
         threading.Thread(target=tarefa, daemon=True).start()
@@ -330,16 +330,6 @@ class ScannerApp:
         btn.pack(pady=14)
         self._hover(btn, ACCENT, ACCENT_HOVER)
 
-    def opcao_ler_config(self):
-        self.limpar_output()
-        self.log("─── LER CONFIGURAÇÕES ────────────────────────\n")
-        self.desactivar_botoes()
-        def tarefa():
-            ler_config(self.session, "low", callback=self.log)
-            self.log("\n✅ Concluído.")
-            self.activar_botoes()
-        threading.Thread(target=tarefa, daemon=True).start()
-
     def opcao_listar_servicos(self):
         self.limpar_output()
         self.log("─── VER SERVIÇOS ─────────────────────────────\n")
@@ -364,5 +354,11 @@ class ScannerApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
+    try:
+        import os
+        ico = os.path.join(os.path.dirname(__file__), "icone.ico")
+        root.iconbitmap(ico)
+    except:
+        pass
     app = ScannerApp(root)
     root.mainloop()

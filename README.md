@@ -1,119 +1,97 @@
-# Scanner de Pentest — Controlo de Servidor
+# Scanner de Pentest
 
-Ferramenta educativa de teste de segurança desenvolvida em Python.
-Demonstra o impacto real de vulnerabilidades de Command Injection num ambiente controlado.
+Ferramenta educativa de teste de seguranca, desenvolvida em Python, com
+interface grafica. Explora a vulnerabilidade de **Command Injection** no
+DVWA para demonstrar o que um atacante conseguiria recolher de um servidor
+que nao valida a entrada do utilizador.
 
-> ⚠️ **Uso exclusivamente educativo.** Testado apenas contra o DVWA (Damn Vulnerable Web Application), uma aplicação criada propositalmente para ser vulnerável. O uso desta ferramenta contra sistemas sem autorização é ilegal (Lei do Cibercrime, Lei n.º 109/2009).
+> ⚠️ **Uso autorizado apenas.** Esta ferramenta foi feita para praticar
+> contra o DVWA, um ambiente local criado de proposito para ser atacado.
+> Usar contra sistemas sem autorizacao e ilegal.
 
 ---
 
 ## Funcionalidades
 
-| # | Acção | Descrição |
-|---|-------|-----------|
-| 1 | Reconhecimento | Descobre utilizador, IP interno e utilizadores do servidor |
-| 2 | Scan da Rede | Encontra dispositivos activos na rede interna |
-| 3 | Scan de Portas | Analisa 16 portas num dispositivo encontrado |
-| 4 | Ler Configurações | Lê ficheiros de configuração com credenciais |
-| 5 | Ver Serviços | Lista todos os serviços Windows activos |
-| 6 | Ver Ligações | Mostra ligações de rede activas (netstat) |
+- **Ligar ao alvo** — faz login automatico no DVWA (com token CSRF) e define o nivel de seguranca.
+- **Reconhecimento** — recolhe utilizador, IP interno, rede, contas do sistema e nome do servidor.
+- **Scan da Rede** — procura dispositivos ativos na rede local (ping aos IPs .1 a .20).
+- **Scan de Portas** — testa 16 portas comuns num dispositivo e indica quais estao abertas.
+- **Ver Servicos** — lista os servicos que estao a correr na maquina.
+- **Ver Ligacoes** — mostra as ligacoes de rede ativas (netstat).
+
+Na apresentacao, os dados sensiveis (IP, nome da maquina e contas pessoais)
+sao **camuflados**: o programa captura o valor real do alvo e so na hora de
+mostrar no ecra troca por um nome generico.
+
+---
+
+## Tecnologias
+
+- Python 3.11+
+- Tkinter (interface grafica)
+- requests (comunicacao HTTP)
+- BeautifulSoup4 (leitura do HTML das respostas)
+
+---
+
+## Estrutura do projeto
+
+```
+scanner-pentest/
+├── main.py              # Interface grafica e ligacao entre os modulos
+├── modules/
+│   └── exploits.py      # Logica dos ataques (reconhecimento, scans, etc.)
+├── utils/
+│   └── auth.py          # Login no DVWA e definicao do nivel de seguranca
+├── requirements.txt     # Dependencias do projeto
+├── DOCUMENTACAO.md      # Documentacao tecnica e academica
+├── README.md
+└── .gitignore
+```
 
 ---
 
 ## Requisitos
 
 - Python 3.11+
-- XAMPP (Apache + MySQL)
-- DVWA instalado em `C:\xampp\htdocs\dvwa`
+- XAMPP com Apache e MySQL
+- DVWA em `C:\xampp\htdocs\dvwa`
 
----
+## Instalacao
 
-## Instalação
-
-### 1. Instalar Python
-Descarrega em: https://www.python.org/downloads/
-Durante a instalação, marca **"Add Python to PATH"**
-
-### 2. Instalar XAMPP
-Descarrega em: https://www.apachefriends.org/
-Instala com as opções padrão.
-
-### 3. Configurar o DVWA
-1. Descarrega o DVWA: https://github.com/digininja/DVWA/archive/refs/heads/master.zip
-2. Extrai e renomeia a pasta para `dvwa`
-3. Copia para `C:\xampp\htdocs\dvwa`
-4. Vai a `C:\xampp\htdocs\dvwa\config`
-5. Copia `config.inc.php.dist` e renomeia a cópia para `config.inc.php`
-
-### 4. Configurar a base de dados
-1. Abre o XAMPP Control Panel
-2. Clica **Start** em Apache e MySQL
-3. Abre http://localhost/phpmyadmin
-4. Clica em **SQL** e cola:
-```sql
-CREATE USER 'dvwa'@'%' IDENTIFIED BY 'p@ssw0rd';
-GRANT ALL PRIVILEGES ON dvwa.* TO 'dvwa'@'%';
-FLUSH PRIVILEGES;
-```
-5. Abre http://localhost/dvwa/setup.php
-6. Clica **"Create / Reset Database"**
-
-### 5. Clonar o repositório e instalar dependências
 ```bash
-git clone https://github.com/moniquemarrafon/dvwa-command-injection-toolkit.git
-cd dvwa-command-injection-toolkit
 pip install -r requirements.txt
-```
-
----
-
-## Como correr
-
-```bash
 python main.py
 ```
 
-1. Escreve o URL do alvo (ex: `http://localhost/dvwa`)
-2. Clica **LIGAR AO ALVO**
-3. Escolhe uma das opções do menu de ações
+## Configuracao do DVWA
+
+1. Instala o XAMPP em https://www.apachefriends.org/
+2. Inicia o Apache e o MySQL no XAMPP Control Panel
+3. Descarrega o DVWA em https://github.com/digininja/DVWA
+4. Copia a pasta para `C:\xampp\htdocs\dvwa`
+5. Em `C:\xampp\htdocs\dvwa\config\`, copia `config.inc.php.dist` e renomeia para `config.inc.php`
+6. Abre http://localhost/phpmyadmin e executa:
+   ```sql
+   CREATE USER 'dvwa'@'%' IDENTIFIED BY 'p@ssw0rd';
+   GRANT ALL PRIVILEGES ON dvwa.* TO 'dvwa'@'%';
+   FLUSH PRIVILEGES;
+   ```
+7. Abre http://localhost/dvwa/setup.php e clica em **Create / Reset Database**
+8. Faz login com `admin` / `password`
 
 ---
 
-## Estrutura
+## Como usar
 
-```
-pentest-server/
-├── main.py              # Interface gráfica principal
-├── modules/
-│   └── exploits.py      # Módulos de ataque
-├── utils/
-│   └── auth.py          # Autenticação no DVWA
-├── requirements.txt
-└── README.md
-```
+1. Inicia o DVWA (Apache + MySQL no XAMPP).
+2. Corre `python main.py`.
+3. Clica em **Ligar ao Alvo**.
+4. Usa as acoes pela ordem: Reconhecimento → Scan da Rede → Scan de Portas → Ver Servicos → Ver Ligacoes.
 
 ---
 
-## Tecnologias
+## Licenca
 
-- **Python 3.11** — linguagem principal
-- **tkinter** — interface gráfica
-- **requests** — navegação HTTP
-- **BeautifulSoup4** — análise de HTML
-- **DVWA** — ambiente de teste
-
----
-
-## Aviso Legal
-
-Esta ferramenta foi desenvolvida exclusivamente para fins educativos e de teste autorizado.
-O uso desta ferramenta contra sistemas sem autorização explícita é ilegal e pode constituir crime informático.
-Testa apenas em ambientes que te pertencem ou para os quais tens autorização por escrito.
-
----
-
-## Autora
-
-**Monique Marrafon**
-Curso Técnico de Programação e Sistemas de Informação
-Porto, Portugal — 2026
+MIT
